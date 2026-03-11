@@ -1,11 +1,28 @@
 import React, { useState } from 'react';
 import { Link, Outlet, useLocation } from '@tanstack/react-router';
-import { FaChartBar } from 'react-icons/fa';
+import { useQuery } from '@tanstack/react-query';
+import { FaChartBar, FaChevronDown, FaChevronUp, FaUser } from 'react-icons/fa';
+import { Modal } from '../components/Modal';
+import { mockApi } from '../api/mockApi';
 
 export function RootLayout() {
-const location = useLocation();
-const currentPath = location.pathname;
+  const location = useLocation();
+  const currentPath = location.pathname;
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isLeadsOpen, setIsLeadsOpen] = useState(false);
+  const [selectedLead, setSelectedLead] = useState(null);
+  const [isEmployeesOpen, setIsEmployeesOpen] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+
+  const { data: sidebarLeads = [] } = useQuery({
+    queryKey: ['leads', 'sidebar'],
+    queryFn: mockApi.leads.getAll,
+  });
+
+  const { data: sidebarEmployees = [] } = useQuery({
+    queryKey: ['employees', 'sidebar'],
+    queryFn: mockApi.employees.getAll,
+  });
 
   const navigation = [
     { 
@@ -85,47 +102,181 @@ const currentPath = location.pathname;
 
         {/* Navigation Links */}
         <nav className="mt-6 px-3 space-y-1">
-  {navigation.map((item) => {
-    const isActive =
-      item.path === '/'
-        ? currentPath === '/'
-        : currentPath === item.path || currentPath.startsWith(item.path + '/');
+          {/* Leads with dropdown */}
+          {(() => {
+            const leadsItem = navigation[0];
+            const isActive = currentPath === '/';
+            return (
+              <div>
+                <Link
+                  to={leadsItem.path}
+                  onClick={() => {
+                    setIsSidebarOpen(false);
+                  }}
+                  className={`
+                    relative flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium
+                    transition-all duration-200 group
+                    ${isActive
+                      ? 'bg-blue-50 text-blue-600'
+                      : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'}
+                  `}
+                >
+                  {isActive && (
+                    <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r bg-blue-600"></span>
+                  )}
+                  <span
+                    className={`transition-colors ${
+                      isActive
+                        ? 'text-blue-600'
+                        : 'text-gray-400 group-hover:text-gray-600'
+                    }`}
+                  >
+                    {leadsItem.icon}
+                  </span>
+                  <span className="flex-1">Leads</span>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setIsLeadsOpen((prev) => !prev);
+                    }}
+                    className="ml-2 p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+                  >
+                    {isLeadsOpen ? <FaChevronUp size={12} /> : <FaChevronDown size={12} />}
+                  </button>
+                </Link>
 
-    return (
-      <Link
-        key={item.path}
-        to={item.path}
-        onClick={() => setIsSidebarOpen(false)}
-        className={`
-          relative flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium
-          transition-all duration-200 group
-          ${isActive
-            ? 'bg-blue-50 text-blue-600'
-            : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'}
-        `}
-      >
-        {/* Active indicator */}
-        {isActive && (
-          <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r bg-blue-600"></span>
-        )}
+                {isLeadsOpen && sidebarLeads.length > 0 && (
+                  <div className="mt-1 space-y-1 pl-6">
+                    {sidebarLeads.map((lead) => (
+                      <button
+                        key={lead.id}
+                        type="button"
+                        onClick={() => {
+                          setSelectedLead(lead);
+                        }}
+                        className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                      >
+                        <FaUser className="text-gray-400" size={12} />
+                        <span className="truncate">{lead.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })()}
 
-        {/* Icon */}
-        <span
-          className={`transition-colors ${
-            isActive
-              ? 'text-blue-600'
-              : 'text-gray-400 group-hover:text-gray-600'
-          }`}
-        >
-          {item.icon}
-        </span>
+          {/* Other navigation items */}
+          {navigation.slice(1).map((item) => {
+            const isActive =
+              currentPath === item.path || currentPath.startsWith(item.path + '/');
 
-        {/* Text */}
-        <span className="flex-1">{item.name}</span>
-      </Link>
-    );
-  })}
-</nav>
+            // Special rendering for Employees with dropdown
+            if (item.path === '/employees') {
+              return (
+                <div key={item.path}>
+                  <Link
+                    to={item.path}
+                    onClick={() => {
+                      setIsSidebarOpen(false);
+                    }}
+                    className={`
+                      relative flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium
+                      transition-all duration-200 group
+                      ${isActive
+                        ? 'bg-blue-50 text-blue-600'
+                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'}
+                    `}
+                  >
+                    {isActive && (
+                      <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r bg-blue-600"></span>
+                    )}
+
+                    <span
+                      className={`transition-colors ${
+                        isActive
+                          ? 'text-blue-600'
+                          : 'text-gray-400 group-hover:text-gray-600'
+                      }`}
+                    >
+                      {item.icon}
+                    </span>
+
+                    <span className="flex-1">Employees</span>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setIsEmployeesOpen((prev) => !prev);
+                      }}
+                      className="ml-2 p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+                    >
+                      {isEmployeesOpen ? (
+                        <FaChevronUp size={12} />
+                      ) : (
+                        <FaChevronDown size={12} />
+                      )}
+                    </button>
+                  </Link>
+
+                  {isEmployeesOpen && sidebarEmployees.length > 0 && (
+                    <div className="mt-1 space-y-1 pl-6">
+                      {sidebarEmployees.map((emp) => (
+                        <button
+                          key={emp.id}
+                          type="button"
+                          onClick={() => {
+                            setSelectedEmployee(emp);
+                          }}
+                          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                        >
+                          <FaUser className="text-gray-400" size={12} />
+                          <span className="truncate">{emp.name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            // Default rendering for other items (Actions, Salaries)
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                onClick={() => setIsSidebarOpen(false)}
+                className={`
+                  relative flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium
+                  transition-all duration-200 group
+                  ${isActive
+                    ? 'bg-blue-50 text-blue-600'
+                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'}
+                `}
+              >
+                {isActive && (
+                  <span className="absolute left-0 top-2 bottom-2 w-1 rounded-r bg-blue-600"></span>
+                )}
+
+                <span
+                  className={`transition-colors ${
+                    isActive
+                      ? 'text-blue-600'
+                      : 'text-gray-400 group-hover:text-gray-600'
+                  }`}
+                >
+                  {item.icon}
+                </span>
+
+                <span className="flex-1">{item.name}</span>
+              </Link>
+            );
+          })}
+        </nav>
 
         {/* Sidebar Footer */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
@@ -214,6 +365,76 @@ const currentPath = location.pathname;
             © {new Date().getFullYear()} Dashboard. All rights reserved.
           </p>
         </footer>
+
+        {/* Lead details modal */}
+        <Modal
+          isOpen={!!selectedLead}
+          onClose={() => setSelectedLead(null)}
+          title={selectedLead ? selectedLead.name : 'Lead Details'}
+        >
+          {selectedLead && (
+            <div className="space-y-3 text-sm">
+              <div>
+                <p className="text-gray-500">Email</p>
+                <p className="font-medium text-gray-900">{selectedLead.email}</p>
+              </div>
+              <div>
+                <p className="text-gray-500">Company</p>
+                <p className="font-medium text-gray-900">{selectedLead.company}</p>
+              </div>
+              <div>
+                <p className="text-gray-500">Status</p>
+                <p className="inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">
+                  {selectedLead.status}
+                </p>
+              </div>
+              <div>
+                <p className="text-gray-500">Created At</p>
+                <p className="font-medium text-gray-900">
+                  {selectedLead.created_at
+                    ? new Date(selectedLead.created_at).toLocaleString()
+                    : 'N/A'}
+                </p>
+              </div>
+            </div>
+          )}
+        </Modal>
+
+        {/* Employee details modal */}
+        <Modal
+          isOpen={!!selectedEmployee}
+          onClose={() => setSelectedEmployee(null)}
+          title={selectedEmployee ? selectedEmployee.name : 'Employee Details'}
+        >
+          {selectedEmployee && (
+            <div className="space-y-3 text-sm">
+              <div>
+                <p className="text-gray-500">Email</p>
+                <p className="font-medium text-gray-900">{selectedEmployee.email}</p>
+              </div>
+              <div>
+                <p className="text-gray-500">Department</p>
+                <p className="font-medium text-gray-900">
+                  {selectedEmployee.department || 'N/A'}
+                </p>
+              </div>
+              <div>
+                <p className="text-gray-500">Position</p>
+                <p className="font-medium text-gray-900">
+                  {selectedEmployee.position || 'N/A'}
+                </p>
+              </div>
+              <div>
+                <p className="text-gray-500">Hire Date</p>
+                <p className="font-medium text-gray-900">
+                  {selectedEmployee.hire_date
+                    ? new Date(selectedEmployee.hire_date).toLocaleDateString()
+                    : 'N/A'}
+                </p>
+              </div>
+            </div>
+          )}
+        </Modal>
       </div>
     </div>
   );
