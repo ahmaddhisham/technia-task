@@ -3,6 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { DataTable } from '../components/DataTable';
 import { mockApi } from '../api/mockApi';
 import { mockEmployees } from '../data/mockData.js';
+import { FaEdit, FaTrash } from 'react-icons/fa';
+import { Modal } from '../components/Modal';
 
 const months = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -134,15 +136,15 @@ export function EmployeeSalariesPage() {
         <div className="flex gap-2">
           <button
             onClick={() => handleEdit(row.original)}
-            className="text-blue-600 hover:text-blue-800"
+            className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
           >
-            Edit
+            <FaEdit />
           </button>
           <button
             onClick={() => handleDelete(row.original.id)}
-            className="text-red-600 hover:text-red-800"
+            className="text-red-600 hover:text-red-800 flex items-center gap-1"
           >
-            Delete
+            <FaTrash />
           </button>
         </div>
       ),
@@ -280,112 +282,114 @@ export function EmployeeSalariesPage() {
         </div>
       </div>
 
-      {/* Form */}
-      {showForm && (
-        <div className="mb-6 p-4 bg-white rounded shadow">
-          <h2 className="text-lg font-medium mb-4">
-            {editingSalary ? 'Edit Salary Record' : 'Add New Salary Record'}
-          </h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Employee</label>
-                <select
-                  name="employee_id"
-                  defaultValue={editingSalary?.employee_id}
-                  required
-                  className="mt-1 block w-full border border-gray-300 rounded p-2"
-                >
-                  <option value="">Select Employee</option>
-                  {mockEmployees.map(emp => (
-                    <option key={emp.id} value={emp.id}>{emp.name}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Month</label>
-                <select
-                  name="month"
-                  defaultValue={editingSalary?.month}
-                  required
-                  className="mt-1 block w-full border border-gray-300 rounded p-2"
-                >
-                  <option value="">Select Month</option>
-                  {months.map(month => (
-                    <option key={month} value={month}>{month}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Year</label>
-                <select
-                  name="year"
-                  defaultValue={editingSalary?.year || currentYear}
-                  required
-                  className="mt-1 block w-full border border-gray-300 rounded p-2"
-                >
-                  {years.map(year => (
-                    <option key={year} value={year}>{year}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Base Salary ($)</label>
-                <input
-                  type="number"
-                  name="base_salary"
-                  defaultValue={editingSalary?.base_salary}
-                  required
-                  min="0"
-                  step="100"
-                  className="mt-1 block w-full border border-gray-300 rounded p-2"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Bonuses ($)</label>
-                <input
-                  type="number"
-                  name="bonuses"
-                  defaultValue={editingSalary?.bonuses || 0}
-                  min="0"
-                  step="100"
-                  className="mt-1 block w-full border border-gray-300 rounded p-2"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Deductions ($)</label>
-                <input
-                  type="number"
-                  name="deductions"
-                  defaultValue={editingSalary?.deductions || 0}
-                  min="0"
-                  step="100"
-                  className="mt-1 block w-full border border-gray-300 rounded p-2"
-                />
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <button
-                type="submit"
-                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-                disabled={createMutation.isLoading || updateMutation.isLoading}
+      {/* Form Modal */}
+      <Modal
+        isOpen={showForm}
+        onClose={() => {
+          setShowForm(false);
+          setEditingSalary(null);
+        }}
+        title={editingSalary ? 'Edit Salary Record' : 'Add New Salary Record'}
+      >
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Employee</label>
+              <select
+                name="employee_id"
+                defaultValue={editingSalary?.employee_id}
+                required
+                className="mt-1 block w-full border border-gray-300 rounded p-2"
               >
-                {editingSalary ? 'Update' : 'Create'}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setShowForm(false);
-                  setEditingSalary(null);
-                }}
-                className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
-              >
-                Cancel
-              </button>
+                <option value="">Select Employee</option>
+                {mockEmployees.map(emp => (
+                  <option key={emp.id} value={emp.id}>{emp.name}</option>
+                ))}
+              </select>
             </div>
-          </form>
-        </div>
-      )}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Month</label>
+              <select
+                name="month"
+                defaultValue={editingSalary?.month}
+                required
+                className="mt-1 block w-full border border-gray-300 rounded p-2"
+              >
+                <option value="">Select Month</option>
+                {months.map(month => (
+                  <option key={month} value={month}>{month}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Year</label>
+              <select
+                name="year"
+                defaultValue={editingSalary?.year || currentYear}
+                required
+                className="mt-1 block w-full border border-gray-300 rounded p-2"
+              >
+                {years.map(year => (
+                  <option key={year} value={year}>{year}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Base Salary ($)</label>
+              <input
+                type="number"
+                name="base_salary"
+                defaultValue={editingSalary?.base_salary}
+                required
+                min="0"
+                step="100"
+                className="mt-1 block w-full border border-gray-300 rounded p-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Bonuses ($)</label>
+              <input
+                type="number"
+                name="bonuses"
+                defaultValue={editingSalary?.bonuses || 0}
+                min="0"
+                step="100"
+                className="mt-1 block w-full border border-gray-300 rounded p-2"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Deductions ($)</label>
+              <input
+                type="number"
+                name="deductions"
+                defaultValue={editingSalary?.deductions || 0}
+                min="0"
+                step="100"
+                className="mt-1 block w-full border border-gray-300 rounded p-2"
+              />
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+              disabled={createMutation.isLoading || updateMutation.isLoading}
+            >
+              {editingSalary ? 'Update' : 'Create'}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setShowForm(false);
+                setEditingSalary(null);
+              }}
+              className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </Modal>
 
       {/* Salary Records Table */}
       <DataTable 

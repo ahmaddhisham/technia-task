@@ -3,6 +3,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { DataTable } from '../components/DataTable';
 import { mockApi } from '../api/mockApi';
 import { mockEmployees } from '../data/mockData.js';
+import { FaEdit, FaTrash } from 'react-icons/fa';
+import { Modal } from '../components/Modal';
 
 const columns = [
   {
@@ -49,15 +51,15 @@ const columns = [
       <div className="flex gap-2">
         <button
           onClick={() => row.original.onEdit?.(row.original)}
-          className="text-blue-600 hover:text-blue-800"
+          className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
         >
-          Edit
+          <FaEdit />
         </button>
         <button
           onClick={() => row.original.onDelete?.(row.original.id)}
-          className="text-red-600 hover:text-red-800"
+          className="text-red-600 hover:text-red-800 flex items-center gap-1"
         >
-          Delete
+          <FaTrash />
         </button>
       </div>
     ),
@@ -157,89 +159,91 @@ export function ActionsPage() {
         </button>
       </div>
 
-      {showForm && (
-        <div className="mb-6 p-4 bg-white rounded shadow">
-          <h2 className="text-lg font-medium mb-4">
-            {editingAction ? 'Edit Action' : 'Add New Action'}
-          </h2>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Title</label>
-              <input
-                type="text"
-                name="title"
-                defaultValue={editingAction?.title}
-                required
-                className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Description</label>
-              <textarea
-                name="description"
-                defaultValue={editingAction?.description}
-                rows="3"
-                className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Due Date</label>
-              <input
-                type="date"
-                name="due_date"
-                defaultValue={editingAction?.due_date?.split('T')[0]}
-                required
-                className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Assigned To</label>
-              <select
-                name="assigned_to"
-                defaultValue={editingAction?.assigned_to}
-                required
-                className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="">Select Employee</option>
-                {mockEmployees.map(emp => (
-                  <option key={emp.id} value={emp.name}>{emp.name}</option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Status</label>
-              <select
-                name="status"
-                defaultValue={editingAction?.status || 'pending'}
-                className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
-              >
-                <option value="pending">Pending</option>
-                <option value="completed">Completed</option>
-                <option value="overdue">Overdue</option>
-              </select>
-            </div>
-            <div className="flex gap-2">
-              <button
-                type="submit"
-                className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                disabled={createMutation.isLoading || updateMutation.isLoading}
-              >
-                {createMutation.isLoading || updateMutation.isLoading ? 'Saving...' : (editingAction ? 'Update' : 'Create')}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setShowForm(false);
-                  setEditingAction(null);
-                }}
-                className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors"
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
+      <Modal
+        isOpen={showForm}
+        onClose={() => {
+          setShowForm(false);
+          setEditingAction(null);
+        }}
+        title={editingAction ? 'Edit Action' : 'Add New Action'}
+      >
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Title</label>
+            <input
+              type="text"
+              name="title"
+              defaultValue={editingAction?.title}
+              required
+              className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Description</label>
+            <textarea
+              name="description"
+              defaultValue={editingAction?.description}
+              rows="3"
+              className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Due Date</label>
+            <input
+              type="date"
+              name="due_date"
+              defaultValue={editingAction?.due_date?.split('T')[0]}
+              required
+              className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Assigned To</label>
+            <select
+              name="assigned_to"
+              defaultValue={editingAction?.assigned_to}
+              required
+              className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="">Select Employee</option>
+              {mockEmployees.map(emp => (
+                <option key={emp.id} value={emp.name}>{emp.name}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Status</label>
+            <select
+              name="status"
+              defaultValue={editingAction?.status || 'pending'}
+              className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              <option value="pending">Pending</option>
+              <option value="completed">Completed</option>
+              <option value="overdue">Overdue</option>
+            </select>
+          </div>
+          <div className="flex gap-2">
+            <button
+              type="submit"
+              className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              disabled={createMutation.isLoading || updateMutation.isLoading}
+            >
+              {createMutation.isLoading || updateMutation.isLoading ? 'Saving...' : (editingAction ? 'Update' : 'Create')}
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setShowForm(false);
+                setEditingAction(null);
+              }}
+              className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </Modal>
 
       <DataTable 
         data={actionsWithHandlers} 
