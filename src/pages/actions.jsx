@@ -51,13 +51,13 @@ const columns = [
       <div className="flex gap-2">
         <button
           onClick={() => row.original.onEdit?.(row.original)}
-          className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
+          className="text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
         >
           <FaEdit />
         </button>
         <button
           onClick={() => row.original.onDelete?.(row.original.id)}
-          className="text-red-600 hover:text-red-800 flex items-center gap-1"
+          className="text-red-600 hover:text-red-800 flex items-center gap-1 cursor-pointer"
         >
           <FaTrash />
         </button>
@@ -136,6 +136,15 @@ export function ActionsPage() {
     onDelete: handleDelete
   }));
 
+  const totalActions = actions.length;
+  const statusCounts = actions.reduce(
+    (acc, action) => {
+      acc[action.status] = (acc[action.status] || 0) + 1;
+      return acc;
+    },
+    {}
+  );
+
   if (error) {
     return (
       <div className="text-center text-red-600 p-4">
@@ -145,9 +154,14 @@ export function ActionsPage() {
   }
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900">Actions</h1>
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-semibold text-gray-900">Actions</h1>
+          <p className="mt-1 text-sm text-gray-500">
+            Manage follow‑ups, tasks, and key activities for your team.
+          </p>
+        </div>
         <button
           onClick={() => {
             setEditingAction(null);
@@ -157,6 +171,32 @@ export function ActionsPage() {
         >
           {showForm ? 'Cancel' : 'Add New Action'}
         </button>
+      </div>
+
+      {/* Summary cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+            Total Actions
+          </p>
+          <p className="mt-2 text-2xl font-semibold text-gray-900">{totalActions}</p>
+        </div>
+        <div className="bg-white rounded-xl shadow-sm border border-yellow-100 p-4">
+          <p className="text-xs font-medium text-yellow-600 uppercase tracking-wide">
+            Pending
+          </p>
+          <p className="mt-2 text-xl font-semibold text-yellow-700">
+            {statusCounts.pending || 0}
+          </p>
+        </div>
+        <div className="bg-white rounded-xl shadow-sm border border-green-100 p-4">
+          <p className="text-xs font-medium text-green-600 uppercase tracking-wide">
+            Completed
+          </p>
+          <p className="mt-2 text-xl font-semibold text-green-700">
+            {statusCounts.completed || 0}
+          </p>
+        </div>
       </div>
 
       <Modal
@@ -226,7 +266,7 @@ export function ActionsPage() {
           <div className="flex gap-2">
             <button
               type="submit"
-              className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
               disabled={createMutation.isLoading || updateMutation.isLoading}
             >
               {createMutation.isLoading || updateMutation.isLoading ? 'Saving...' : (editingAction ? 'Update' : 'Create')}
@@ -237,7 +277,7 @@ export function ActionsPage() {
                 setShowForm(false);
                 setEditingAction(null);
               }}
-              className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors"
+              className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors cursor-pointer"
             >
               Cancel
             </button>

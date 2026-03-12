@@ -136,13 +136,13 @@ export function EmployeeSalariesPage() {
         <div className="flex gap-2">
           <button
             onClick={() => handleEdit(row.original)}
-            className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
+            className="text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
           >
             <FaEdit />
           </button>
           <button
             onClick={() => handleDelete(row.original.id)}
-            className="text-red-600 hover:text-red-800 flex items-center gap-1"
+            className="text-red-600 hover:text-red-800 flex items-center gap-1 cursor-pointer"
           >
             <FaTrash />
           </button>
@@ -274,7 +274,7 @@ export function EmployeeSalariesPage() {
           <div className="flex items-end">
             <button
               onClick={resetFilters}
-              className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+              className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 cursor-pointer"
             >
               Reset Filters
             </button>
@@ -372,7 +372,7 @@ export function EmployeeSalariesPage() {
           <div className="flex gap-2">
             <button
               type="submit"
-              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+              className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 cursor-pointer"
               disabled={createMutation.isLoading || updateMutation.isLoading}
             >
               {editingSalary ? 'Update' : 'Create'}
@@ -383,7 +383,7 @@ export function EmployeeSalariesPage() {
                 setShowForm(false);
                 setEditingSalary(null);
               }}
-              className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+              className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 cursor-pointer"
             >
               Cancel
             </button>
@@ -424,7 +424,7 @@ export function EmployeeSalariesPage() {
             a.download = `salaries_${new Date().toISOString().split('T')[0]}.csv`;
             a.click();
           }}
-          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 cursor-pointer"
         >
           Export to CSV
         </button>

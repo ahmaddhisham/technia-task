@@ -92,7 +92,7 @@ export function RootLayout() {
           </div>
           <button 
             onClick={() => setIsSidebarOpen(false)}
-            className="lg:hidden p-1 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
+            className="lg:hidden p-1 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 cursor-pointer"
           >
             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -141,7 +141,7 @@ export function RootLayout() {
                       e.stopPropagation();
                       setIsLeadsOpen((prev) => !prev);
                     }}
-                    className="ml-2 p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+                    className="ml-2 p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 cursor-pointer"
                   >
                     {isLeadsOpen ? <FaChevronUp size={12} /> : <FaChevronDown size={12} />}
                   </button>
@@ -156,7 +156,7 @@ export function RootLayout() {
                         onClick={() => {
                           setSelectedLead(lead);
                         }}
-                        className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                        className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-gray-600 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
                       >
                         <FaUser className="text-gray-400" size={12} />
                         <span className="truncate">{lead.name}</span>
@@ -213,7 +213,7 @@ export function RootLayout() {
                         e.stopPropagation();
                         setIsEmployeesOpen((prev) => !prev);
                       }}
-                      className="ml-2 p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+                      className="ml-2 p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 cursor-pointer"
                     >
                       {isEmployeesOpen ? (
                         <FaChevronUp size={12} />
@@ -232,7 +232,7 @@ export function RootLayout() {
                           onClick={() => {
                             setSelectedEmployee(emp);
                           }}
-                          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                          className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-gray-600 hover:bg-gray-100 hover:text-gray-900 cursor-pointer"
                         >
                           <FaUser className="text-gray-400" size={12} />
                           <span className="truncate">{emp.name}</span>
@@ -288,7 +288,7 @@ export function RootLayout() {
               <p className="text-sm font-medium text-gray-900 truncate">Admin User</p>
               <p className="text-xs text-gray-500 truncate">admin@example.com</p>
             </div>
-            <button className="p-1 rounded-full text-gray-400 hover:text-gray-500 hover:bg-gray-100">
+            <button className="p-1 rounded-full text-gray-400 hover:text-gray-500 hover:bg-gray-100 cursor-pointer">
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
               </svg>
@@ -306,7 +306,7 @@ export function RootLayout() {
               {/* Mobile menu button */}
               <button
                 onClick={toggleSidebar}
-                className="lg:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+                className="lg:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 cursor-pointer"
               >
                 <span className="sr-only">Open sidebar</span>
                 <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -335,7 +335,7 @@ export function RootLayout() {
 
               {/* Right side actions */}
               <div className="flex items-center space-x-3">
-                <button className="p-2 rounded-full text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <button className="p-2 rounded-full text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer">
                   <span className="sr-only">View notifications</span>
                   <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />

@@ -51,13 +51,13 @@ const columns = [
       <div className="flex gap-2">
         <button
           onClick={() => row.original.onEdit?.(row.original)}
-          className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
+          className="text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
         >
           <FaEdit />
         </button>
         <button
           onClick={() => row.original.onDelete?.(row.original.id)}
-          className="text-red-600 hover:text-red-800 flex items-center gap-1"
+          className="text-red-600 hover:text-red-800 flex items-center gap-1 cursor-pointer"
         >
           <FaTrash />
         </button>
@@ -135,6 +135,15 @@ export function LeadsPage() {
     onDelete: handleDelete
   }));
 
+  const totalLeads = leads.length;
+  const statusCounts = leads.reduce(
+    (acc, lead) => {
+      acc[lead.status] = (acc[lead.status] || 0) + 1;
+      return acc;
+    },
+    {}
+  );
+
   if (error) {
     return (
       <div className="text-center text-red-600 p-4">
@@ -144,9 +153,14 @@ export function LeadsPage() {
   }
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900">Leads</h1>
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-semibold text-gray-900">Leads</h1>
+          <p className="mt-1 text-sm text-gray-500">
+            Track your sales pipeline from new leads to closed deals.
+          </p>
+        </div>
         <button
           onClick={() => {
             setEditingLead(null);
@@ -156,6 +170,40 @@ export function LeadsPage() {
         >
           {showForm ? 'Cancel' : 'Add New Lead'}
         </button>
+      </div>
+
+      {/* Summary cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+            Total Leads
+          </p>
+          <p className="mt-2 text-2xl font-semibold text-gray-900">{totalLeads}</p>
+        </div>
+        <div className="bg-white rounded-xl shadow-sm border border-blue-100 p-4">
+          <p className="text-xs font-medium text-blue-600 uppercase tracking-wide">
+            New
+          </p>
+          <p className="mt-2 text-xl font-semibold text-blue-700">
+            {statusCounts.new || 0}
+          </p>
+        </div>
+        <div className="bg-white rounded-xl shadow-sm border border-green-100 p-4">
+          <p className="text-xs font-medium text-green-600 uppercase tracking-wide">
+            Qualified
+          </p>
+          <p className="mt-2 text-xl font-semibold text-green-700">
+            {statusCounts.qualified || 0}
+          </p>
+        </div>
+        <div className="bg-white rounded-xl shadow-sm border border-yellow-100 p-4">
+          <p className="text-xs font-medium text-yellow-600 uppercase tracking-wide">
+            Contacted
+          </p>
+          <p className="mt-2 text-xl font-semibold text-yellow-700">
+            {statusCounts.contacted || 0}
+          </p>
+        </div>
       </div>
 
       <Modal
@@ -213,7 +261,7 @@ export function LeadsPage() {
           <div className="flex gap-2">
             <button
               type="submit"
-              className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
               disabled={createMutation.isLoading || updateMutation.isLoading}
             >
               {createMutation.isLoading || updateMutation.isLoading ? 'Saving...' : (editingLead ? 'Update' : 'Create')}
@@ -224,7 +272,7 @@ export function LeadsPage() {
                 setShowForm(false);
                 setEditingLead(null);
               }}
-              className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors"
+              className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors cursor-pointer"
             >
               Cancel
             </button>

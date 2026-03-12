@@ -37,13 +37,13 @@ const columns = [
       <div className="flex gap-2">
         <button
           onClick={() => row.original.onEdit?.(row.original)}
-          className="text-blue-600 hover:text-blue-800 flex items-center gap-1"
+          className="text-blue-600 hover:text-blue-800 flex items-center gap-1 cursor-pointer"
         >
           <FaEdit />
         </button>
         <button
           onClick={() => row.original.onDelete?.(row.original.id)}
-          className="text-red-600 hover:text-red-800 flex items-center gap-1"
+          className="text-red-600 hover:text-red-800 flex items-center gap-1 cursor-pointer"
         >
           <FaTrash />
         </button>
@@ -122,6 +122,17 @@ export function EmployeesPage() {
     onDelete: handleDelete
   }));
 
+  const totalEmployees = employees.length;
+  const departments = employees.reduce(
+    (acc, emp) => {
+      if (emp.department) {
+        acc[emp.department] = (acc[emp.department] || 0) + 1;
+      }
+      return acc;
+    },
+    {}
+  );
+
   if (error) {
     return (
       <div className="text-center text-red-600 p-4">
@@ -131,9 +142,14 @@ export function EmployeesPage() {
   }
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900">Employees</h1>
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-semibold text-gray-900">Employees</h1>
+          <p className="mt-1 text-sm text-gray-500">
+            Keep track of your team, their roles, and join dates.
+          </p>
+        </div>
         <button
           onClick={() => {
             setEditingEmployee(null);
@@ -143,6 +159,34 @@ export function EmployeesPage() {
         >
           {showForm ? 'Cancel' : 'Add New Employee'}
         </button>
+      </div>
+
+      {/* Summary cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+          <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+            Total Employees
+          </p>
+          <p className="mt-2 text-2xl font-semibold text-gray-900">{totalEmployees}</p>
+        </div>
+        <div className="bg-white rounded-xl shadow-sm border border-blue-100 p-4">
+          <p className="text-xs font-medium text-blue-600 uppercase tracking-wide">
+            Departments
+          </p>
+          <p className="mt-2 text-xl font-semibold text-blue-700">
+            {Object.keys(departments).length}
+          </p>
+        </div>
+        <div className="bg-white rounded-xl shadow-sm border border-green-100 p-4">
+          <p className="text-xs font-medium text-green-600 uppercase tracking-wide">
+            Largest Department
+          </p>
+          <p className="mt-2 text-sm font-semibold text-green-700">
+            {Object.keys(departments).length
+              ? Object.entries(departments).sort((a, b) => b[1] - a[1])[0][0]
+              : 'N/A'}
+          </p>
+        </div>
       </div>
 
       <Modal
@@ -207,7 +251,7 @@ export function EmployeesPage() {
           <div className="flex gap-2">
             <button
               type="submit"
-              className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
               disabled={createMutation.isLoading || updateMutation.isLoading}
             >
               {createMutation.isLoading || updateMutation.isLoading ? 'Saving...' : (editingEmployee ? 'Update' : 'Create')}
@@ -218,7 +262,7 @@ export function EmployeesPage() {
                 setShowForm(false);
                 setEditingEmployee(null);
               }}
-              className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+              className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 cursor-pointer"
             >
               Cancel
             </button>

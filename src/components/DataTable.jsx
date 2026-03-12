@@ -105,16 +105,16 @@ export function DataTable({ data, columns, loading }) {
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto bg-white rounded-lg shadow">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+      <div className="overflow-x-auto bg-white rounded-xl shadow-sm ring-1 ring-gray-100">
+        <table className="min-w-full divide-y divide-gray-200 text-sm">
+          <thead className="bg-gray-50/80 backdrop-blur">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <th
                     key={header.id}
                     onClick={header.column.getToggleSortingHandler()}
-                    className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${
+                    className={`px-6 py-3 text-left text-[0.7rem] font-semibold text-gray-500 uppercase tracking-wider ${
                       header.column.getCanSort() ? 'cursor-pointer hover:bg-gray-100' : ''
                     }`}
                   >
@@ -137,13 +137,16 @@ export function DataTable({ data, columns, loading }) {
               </tr>
             ))}
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-white divide-y divide-gray-100">
             {table.getRowModel().rows.map((row) => (
-              <tr key={row.id} className="hover:bg-gray-50 transition-colors">
+              <tr
+                key={row.id}
+                className="hover:bg-blue-50/40 even:bg-gray-50/40 transition-colors"
+              >
                 {row.getVisibleCells().map((cell) => (
                   <td
                     key={cell.id}
-                    className="px-6 py-4 whitespace-nowrap text-sm text-gray-900"
+                    className="px-6 py-3 whitespace-nowrap text-gray-900"
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
@@ -179,14 +182,14 @@ export function DataTable({ data, columns, loading }) {
           <button
             onClick={() => table.setPageIndex(0)}
             disabled={!table.getCanPreviousPage()}
-            className="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             <FaAngleDoubleLeft />
           </button>
           <button
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            className="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             <FaAngleLeft />
           </button>
@@ -212,7 +215,7 @@ export function DataTable({ data, columns, loading }) {
                 <button
                   key={pageNumber}
                   onClick={() => table.setPageIndex(pageNumber)}
-                  className={`px-3 py-1 rounded-md text-sm font-medium ${
+                  className={`px-3 py-1 rounded-md text-sm font-medium cursor-pointer ${
                     currentPage === pageNumber
                       ? 'bg-blue-500 text-white'
                       : 'text-gray-700 hover:bg-gray-100'
@@ -227,14 +230,14 @@ export function DataTable({ data, columns, loading }) {
           <button
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
-            className="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             <FaAngleRight />
           </button>
           <button
             onClick={() => table.setPageIndex(table.getPageCount() - 1)}
             disabled={!table.getCanNextPage()}
-            className="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
           >
             <FaAngleDoubleRight />
           </button>
