@@ -1,16 +1,98 @@
-# React + Vite
+## CRM Dashboard (Leads, Actions, Employees & Salaries)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An interactive **React + Vite** dashboard for managing:
 
-Currently, two official plugins are available:
+- **Leads** – track prospects with status and metadata  
+- **Actions** – to‑dos and follow‑ups associated with your pipeline  
+- **Employees** – people directory with roles and hire dates  
+- **Employee Salaries** – salary records with bonuses, deductions, and net pay  
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+All CRUD actions work against a **mock API** that persists data in **`localStorage`**, so your changes survive page reloads without needing a backend.
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## ✨ Features
 
-## Expanding the ESLint configuration
+- **Modern UI**
+  - Responsive layout with sidebar navigation and top header
+  - Clean tables with sorting, searching, and pagination
+  - Icons via `react-icons` for a polished look
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Data Management**
+  - Leads, actions, employees, and salary records
+  - Create, edit, delete via modals on every page
+  - Client‑side persistence using `localStorage`
+
+- **Smart Navigation**
+  - Sidebar with sections: Leads, Actions, Employees, Salaries
+  - **Leads dropdown** in the sidebar listing all leads
+    - Clicking a lead opens a **Lead Details** modal
+  - **Employees dropdown** listing all employees
+    - Clicking an employee opens an **Employee Details** modal
+
+- **Tables & UX**
+  - Powered by **@tanstack/react-table**
+  - Column sorting with visual indicators
+  - Global search and page‑size selector
+  - Empty‑state and loading spinners for better feedback
+
+- **Data Fetching**
+  - **@tanstack/react-query** for caching and mutations
+  - Mock API layer in `src/api/mockApi.js`
+
+---
+
+## 🛠 Tech Stack
+
+- **Frontend**: React 19, Vite
+- **State / Data**: @tanstack/react-query, @tanstack/react-table, @tanstack/react-router
+- **Styling**: Tailwind CSS utility classes
+- **Icons**: `react-icons`
+- **Persistence**: Browser `localStorage` via the mock API
+
+---
+
+## 🚀 Getting Started
+
+From the `project` folder:
+
+```bash
+npm install
+npm run dev
+```
+
+Then open the URL shown in the terminal (by default `http://localhost:5173`).
+
+---
+
+## 📂 Key Project Structure
+
+- `src/main.jsx` – React entry, router setup
+- `src/layouts/RootLayout.jsx` – Shell layout (sidebar, header, breadcrumbs, modals)
+- `src/components/DataTable.jsx` – Reusable data table with search/sort/pagination
+- `src/components/Modal.jsx` – Generic modal used across pages
+- `src/api/mockApi.js` – Mock API with localStorage persistence
+- `src/data/mockData.js` – Seed data for all entities
+- `src/pages/leads.jsx` – Leads listing & modal form
+- `src/pages/actions.jsx` – Actions listing & modal form
+- `src/pages/employees.jsx` – Employees listing & modal form
+- `src/pages/employees-salaries.jsx` – Salary listing, summary cards, filters & CSV export
+
+---
+
+## 💡 Notes & Customization
+
+- To **reset all data** back to the original mock values, clear this app’s `localStorage` in your browser dev tools.
+- The mock API includes small artificial delays and optional random errors to simulate a real backend.
+- You can swap the mock API implementation in `src/api/mockApi.js` with real HTTP calls (e.g., using Axios) without changing the page components.
+
+---
+
+## 🧪 Linting & Scripts
+
+Useful npm scripts:
+
+- `npm run dev` – start dev server
+- `npm run build` – production build
+- `npm run preview` – preview the production build
+- `npm run lint` – run ESLint over the project
